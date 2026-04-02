@@ -1,0 +1,717 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="10/14/2025 4:14:04 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DARE"
+  DTS:CreatorName="DARE\dare2"
+  DTS:DTSID="{3830A3C7-BD7E-47EA-8DD9-6008184BDC62}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5685.2"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Package1"
+  DTS:PackageType="5"
+  DTS:VersionBuild="8"
+  DTS:VersionGUID="{19185960-496B-4B28-A17F-652D13E6BA66}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:LogProviders>
+    <DTS:LogProvider
+      DTS:ConfigString="DARE_SQLEXPRESS.DW-DB-ProdajaFord"
+      DTS:CreationName="Microsoft.LogProviderSQLServer"
+      DTS:Description="Writes log entries for events to a SQL Server database"
+      DTS:DTSID="{C302F772-B55A-4664-94B6-F68091756FE4}"
+      DTS:ObjectName="SSIS log provider for SQL Server">
+      <DTS:ObjectData>
+        <InnerObject />
+      </DTS:ObjectData>
+    </DTS:LogProvider>
+  </DTS:LogProviders>
+  <DTS:Variables />
+  <DTS:LoggingOptions
+    DTS:FilterKind="0"
+    DTS:LoggingMode="1">
+    <DTS:SelectedLogProviders>
+      <DTS:SelectedLogProvider
+        DTS:InstanceID="{C302F772-B55A-4664-94B6-F68091756FE4}" />
+    </DTS:SelectedLogProviders>
+  </DTS:LoggingOptions>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\DROP AND CREATE DimSeller"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{B8CFFB4D-06AE-47A5-A91F-83F8AE6644F5}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DROP AND CREATE DimSeller"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{D2D94E7D-EB72-4A62-B97F-F63C0CDD68D9}"
+          SQLTask:SqlStatementSource="IF EXISTS &#xA;&#x9;(SELECT *&#xA;&#x9;FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS&#xA;&#x9;WHERE CONSTRAINT_NAME = 'FK_FactSales_DimSeller')&#xA;BEGIN&#xA;&#x9;ALTER TABLE [dbo].[FactSales] DROP CONSTRAINT [FK_FactSales_DimSeller]&#xA;END&#xA;&#xA;IF EXISTS&#xA;&#x9;(SELECT *&#xA;&#x9;FROM sysobjects&#xA;&#x9;WHERE id = OBJECT_ID(N'DimSeller'))&#xA;BEGIN&#xA;&#x9;DROP TABLE [dbo].[DimSeller]&#xA;&#x9;CREATE TABLE [dbo].[DimSeller](&#xA;&#x9;[SellerSID] [int] IDENTITY(1,1) NOT NULL,&#xA;&#x9;[SellerID] [int] NOT NULL,&#xA;&#x9;[SellerName] [nvarchar](50) NULL,&#xA; CONSTRAINT [PK_DimSeller] PRIMARY KEY CLUSTERED &#xA;(&#xA;&#x9;[SellerSID] ASC&#xA;)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]&#xA;) ON [PRIMARY]&#xA;END" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\ETL DimSeller"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{CDF6C016-8930-46AB-88DC-2754957D3063}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="ETL DimSeller"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\ETL DimSeller\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\ETL DimSeller\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\ETL DimSeller\Data Conversion.Inputs[Data Conversion Input].Columns[seller]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="seller"
+                      lineageId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].Columns[seller]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\ETL DimSeller\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\ETL DimSeller\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ETL DimSeller\Data Conversion.Outputs[Data Conversion Output].Columns[SellerName]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="50"
+                      lineageId="Package\ETL DimSeller\Data Conversion.Outputs[Data Conversion Output].Columns[SellerName]"
+                      name="SellerName"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].Columns[seller]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\ETL DimSeller\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\ETL DimSeller\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ETL DimSeller\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimSeller\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\ETL DimSeller\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimSeller\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\ETL DimSeller\Load DimSeller"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="Load DimSeller"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[DimSeller]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\ETL DimSeller\Load DimSeller.Connections[OleDbConnection]"
+                  connectionManagerID="{D2D94E7D-EB72-4A62-B97F-F63C0CDD68D9}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DARE_SQLEXPRESS.DW-DB-ProdajaFord]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\ETL DimSeller\Load DimSeller.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\ETL DimSeller\Load DimSeller.Inputs[OLE DB Destination Input].Columns[sellerID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="sellerID"
+                      externalMetadataColumnId="Package\ETL DimSeller\Load DimSeller.Inputs[OLE DB Destination Input].ExternalColumns[SellerID]"
+                      lineageId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].Columns[sellerID]" />
+                    <inputColumn
+                      refId="Package\ETL DimSeller\Load DimSeller.Inputs[OLE DB Destination Input].Columns[SellerName]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="SellerName"
+                      externalMetadataColumnId="Package\ETL DimSeller\Load DimSeller.Inputs[OLE DB Destination Input].ExternalColumns[SellerName]"
+                      lineageId="Package\ETL DimSeller\Data Conversion.Outputs[Data Conversion Output].Columns[SellerName]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Load DimSeller.Inputs[OLE DB Destination Input].ExternalColumns[SellerSID]"
+                      dataType="i4"
+                      name="SellerSID" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Load DimSeller.Inputs[OLE DB Destination Input].ExternalColumns[SellerID]"
+                      dataType="i4"
+                      name="SellerID" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Load DimSeller.Inputs[OLE DB Destination Input].ExternalColumns[SellerName]"
+                      dataType="wstr"
+                      length="50"
+                      name="SellerName" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\ETL DimSeller\Load DimSeller.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\ETL DimSeller\Load DimSeller.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ETL DimSeller\Load DimSeller.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimSeller\Load DimSeller.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\ETL DimSeller\Load DimSeller.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimSeller\Load DimSeller.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\ETL DimSeller\Read table Seller"
+              componentClassID="Microsoft.FlatFileSource"
+              contactInfo="Flat File Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Flat File Source"
+              localeId="1033"
+              name="Read table Seller"
+              usesDispositions="true"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies whether zero-length columns are treated as null."
+                  name="RetainNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of an output column containing the file name. If no name is specified, no output column containing the file name will be generated."
+                  name="FileNameColumnName"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\ETL DimSeller\Read table Seller.Connections[FlatFileConnection]"
+                  connectionManagerID="{E93BFF8B-B2DC-47EC-AF3B-3CC0BAFD2162}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Flat File Connection Manager]"
+                  name="FlatFileConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output]"
+                  name="Flat File Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].Columns[sellerID]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[sellerID]"
+                      length="50"
+                      lineageId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].Columns[sellerID]"
+                      name="sellerID"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the data is in binary format."
+                          name="UseBinaryFormat">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].Columns[seller]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[seller]"
+                      length="50"
+                      lineageId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].Columns[seller]"
+                      name="seller"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the data is in binary format."
+                          name="UseBinaryFormat">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[Year of production]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Year of production" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[make]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="make" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[model]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="model" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[trim]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="trim" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[body]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="body" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[transmission]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="transmission" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[vin]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="vin" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[state]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="state" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[condition]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="condition" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[odometer]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="odometer" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[color]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="color" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[interior]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="interior" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[sellerID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="sellerID" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[seller]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="seller" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[mmr]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="mmr" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[sellingprice]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="sellingprice" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[saledate]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="saledate" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[Age]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Age" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[CustomerId]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="CustomerId" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[Gender]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Gender" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[Day]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Day" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[Year]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Year" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[Month]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Month" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[Region]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Region" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[ZipCode]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ZipCode" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[Quantity]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="Quantity" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output].ExternalColumns[ValueGap]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ValueGap" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Error Output]"
+                  isErrorOut="true"
+                  name="Flat File Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Error Output].Columns[Flat File Source Error Output Column]"
+                      codePage="1252"
+                      dataType="text"
+                      description="Flat File Source Error Output Column"
+                      lineageId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Error Output].Columns[Flat File Source Error Output Column]"
+                      name="Flat File Source Error Output Column" />
+                    <outputColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\ETL DimSeller.Paths[Data Conversion Output]"
+              endId="Package\ETL DimSeller\Load DimSeller.Inputs[OLE DB Destination Input]"
+              name="Data Conversion Output"
+              startId="Package\ETL DimSeller\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\ETL DimSeller.Paths[Flat File Source Output]"
+              endId="Package\ETL DimSeller\Data Conversion.Inputs[Data Conversion Input]"
+              name="Flat File Source Output"
+              startId="Package\ETL DimSeller\Read table Seller.Outputs[Flat File Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{E321877E-F875-41F7-9F43-94F191616086}"
+      DTS:From="Package\DROP AND CREATE DimSeller"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\ETL DimSeller" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="230.666666666667,42.6666666666667"
+          Id="Package\DROP AND CREATE DimSeller"
+          TopLeft="72.9999983236194,46.4473683008526" />
+        <NodeLayout
+          Size="148,42.6666666666667"
+          Id="Package\ETL DimSeller"
+          TopLeft="107.374995445833,119.76315664015" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="184.854163551393,89.1140349675193">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,30.6491216726306"
+              Start="0,0"
+              End="0,23.1491216726306">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.1491216726306" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\ETL DimSeller">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="161.333333333334,42.6666666666667"
+          Id="Package\ETL DimSeller\Read table Seller"
+          TopLeft="116.24999480322,21.8947366017054" />
+        <NodeLayout
+          Size="152,42.6666666666667"
+          Id="Package\ETL DimSeller\Load DimSeller"
+          TopLeft="117.499994747341,190.210524227315" />
+        <NodeLayout
+          Size="158.666666666667,42.6666666666667"
+          Id="Package\ETL DimSeller\Data Conversion"
+          TopLeft="124.874994663522,101.763156925625" />
+        <EdgeLayout
+          Id="Package\ETL DimSeller.Paths[Flat File Source Output]"
+          TopLeft="200.562494733371,64.561403268372">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,37.2017536572528"
+              Start="0,0"
+              End="0,29.7017536572528">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.7017536572528" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\ETL DimSeller.Paths[Data Conversion Output]"
+          TopLeft="204.208327996855,144.429823592292">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-10.7083332495143,45.7807006350234"
+              Start="0,0"
+              End="-10.7083332495143,38.2807006350234">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.8903503175117" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.8903503175117"
+                    Point2="0,22.8903503175117"
+                    Point3="-4,22.8903503175117" />
+                  <mssgle:LineSegment
+                    End="-6.70833324951428,22.8903503175117" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-6.70833324951428,22.8903503175117"
+                    Point2="-10.7083332495143,22.8903503175117"
+                    Point3="-10.7083332495143,26.8903503175117" />
+                  <mssgle:LineSegment
+                    End="-10.7083332495143,38.2807006350234" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\ETL DimSeller\Load DimSeller">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

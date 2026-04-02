@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="DARE_SQLEXPRESS.DW-DB-ProdajaFord"
+  DTS:DTSID="{D2D94E7D-EB72-4A62-B97F-F63C0CDD68D9}"
+  DTS:CreationName="OLEDB">
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectRetryCount="1"
+      DTS:ConnectRetryInterval="5"
+      DTS:ConnectionString="Data Source=DARE\SQLEXPRESS;Initial Catalog=DW-DB-ProdajaFord;Provider=SQLNCLI11.1;Integrated Security=SSPI;Application Name=SSIS-ETL PROEKAT-{D2D94E7D-EB72-4A62-B97F-F63C0CDD68D9}DARE\SQLEXPRESS.DW-DB-ProdajaFord;Auto Translate=False;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>
